@@ -4,11 +4,9 @@ This code package contains a helper function `sumexppdf()` designed to generate 
 
 **Functionality:**
 
-The function computes the sum:
-$$Y = X_1 + X_2 + X_3 + \ldots + X_n $$
+The function computes the PDF of the sum of independent exponential random variables: Y = X_1 + X_2 + X_3 + ... + X_n. 
 
-When provided with weights as the third input argument, it calculates a weighted sum:
-$$Y = a_1 \cdot X_1 + a_2 \cdot X_2 + \ldots + a_n \cdot X_n $$
+When provided with weights as the third input argument, it computes the PDF of the weighted sum of independent exponential random variables: Y = a_1.X_1 + a_2.X_2 + ... + a_n.X_n
 
 *Note: Only positive weights are supported.*
 
