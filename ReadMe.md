@@ -1,4 +1,4 @@
-# sumexppDF.m MATLAB Helper Function
+# sumexppdf.m MATLAB Helper Function
 
 This code package contains a helper function `sumexppdf()` designed to generate Probability Density Functions (PDF) and Cumulative Distribution Functions (CDF) for the sum of independent exponential random variables.
 
