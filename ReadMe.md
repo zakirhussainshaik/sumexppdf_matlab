@@ -30,10 +30,18 @@ f = sumexppdf(t, lambdas, weights); % or [f, F] = sumexppdf(t, lambdas, weights)
 
 Function Details:
 
-Function Version: 1.0
+Function Version: 2.0
 License: This code is licensed under the GPLv2 license.
-Compatibility: MATLAB (tested on 2023a)
+Compatibility: MATLAB (tested on 2024a)
 Additional Information:
 This file is accompanied by example scripts and an illustration on obtaining the PDF of the norm square of a complex Gaussian vector.
+
+**Issues fixed from version 1.0:**
+1. Fixed some issues with nsumk function
+2. Matlab produces power(0,0) = 1, but in this code it should be 0
+3. Now this works for examples like: lmd = [10,10,3], without issues.
+
+I would like to thank Prof. Axel Larsen, University of Copenhagen, who was generous enough to point out the example lmd = [10,10,3], for which version 1 had some issues.
+
 
 For theoretical expressions and further discussions, refer to the accompanying blog article: https://www.zakirtechblog.com/post/sumexppdf/

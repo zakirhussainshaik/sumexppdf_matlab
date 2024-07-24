@@ -21,9 +21,14 @@ function [f,F] = sumexppdf(t,lamdas,varargin)
 % f = sumexppdf(t,lmd,w); or [f,F] = sumexppdf(t,lmd,w);
 
 % Author: Zakir Hussain Shaik
-% This function version 1.0
+% This function version 2.0
 % License: This code is licensed under the GPLv2 license.
-% MATLAB (tested on 2023a)
+% MATLAB (tested on 2024a)
+
+% Issues fixed from version 1.0
+% 1. Fixed some issues with nsumk function
+% 2. Matlab produces power(0,0) = 1, but in this code it should be 0
+% 3. Now this works for examples like: lmd = [10,10,3], without issues.
 
 % Refer the blog article for theoretical expressions: https://www.zakirtechblog.com/post/sumexppdf/
 
@@ -34,7 +39,7 @@ assert(isreal(t) & all(t>=0),'Input -t- must be real valued and nonnegative');
 assert(all(lamdas > 0),'Value must be greater than 0');
 
 defaultWeights = ones(size(lamdas));
-errorMsgWeights = 'Function Supported for Positive Weights'; 
+errorMsgWeights = 'Function Supported for Positive Weights';
 validateWeights= @(x) assert(all(x > 0),errorMsgWeights);
 addOptional(parsVar,'weights',defaultWeights,validateWeights);
 
@@ -99,11 +104,18 @@ else
         for j = 1:ki
 
             term3tmp = ( power(-1,ki-j)/factorial(j-1) )*power(t,j-1);
+            term3tmp(t==0) = 0;
             term3tmp_cdf = ( power(-1,ki-j)/power(lmdu(i),j) )*gammainc(lmdu(i)*t,j);
 
             % Find all combinations
             allM0 = nsumk(n-1,ki-j);
-            allM = [allM0(:,1:i-1), zeros(size(allM0,1),1), allM0(:,i:end)];
+            if ~isempty(allM0) || ki==j
+
+                if isempty(allM0)
+                    allM = zeros(1,n);
+                else
+                    allM = [allM0(:,1:i-1), zeros(size(allM0,1),1), allM0(:,i:end)];
+                end
 
             term2 = 0;
             for idx_sumMs = 1:size(allM,1)
@@ -119,6 +131,10 @@ else
                 end
                 term2 = term2 + term1;
 
+            end
+
+            else
+                term2 = 0;
             end
 
             term3 = term3 + term3tmp*term2;
@@ -143,12 +159,17 @@ if dimOft_row==0
 end
 
     function A = nsumk(n,k)
-     % This helper function is taken from:
-     % Peter Cotton (2023). nsumk (https://www.mathworks.com/matlabcentral/fileexchange/28340-nsumk), MATLAB Central File Exchange. Retrieved November 21, 2023.
-        b = nchoosek(k+n-1,n-1);
-        dividers = [zeros(b,1),nchoosek((1:(k+n-1))',n-1),ones(b,1)*(k+n)];
-        A = diff(dividers,1,2)-1;
+        % This helper function is taken from:
+        % Peter Cotton (2023). nsumk (https://www.mathworks.com/matlabcentral/fileexchange/28340-nsumk), MATLAB Central File Exchange. Retrieved November 21, 2023.
+        if n==1 && k==1
+            A = 1;
+        elseif  n>0
+            b = nchoosek(k+n-1,n-1);
+            dividers = [zeros(b,1),nchoosek((1:(k+n-1))',n-1),ones(b,1)*(k+n)];
+            A = diff(dividers,1,2)-1;
+        else
+            A = [];
+        end
     end
-
 
 end
